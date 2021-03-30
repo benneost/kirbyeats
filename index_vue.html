@@ -26,20 +26,25 @@
                     <!-- <table class="table table-striped"> -->
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>ISBN13</th>
-                            <th>Price</th>
-                            <th>Availability</th>
-                            <th>Place Order</th>
+                            <th>OrderID</th>
+                            <th>CustomerID</th>
+                            <th>RestaurantID</th>
+                            <th>RiderID</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Modified</th>
                         </tr>
-                        <tr v-for="book in books">
-                            <td>{{ book.title }}</td>
-                            <td>{{ book.isbn13 }}</td>
-                            <td>{{ book.price }}</td>
-                            <td>{{ book.availability }}</td>
-                            <td><button @click="placeOrder(book)" type="button" class="btn btn-primary">Place
+                        <tr v-for="order in orders">
+                            <td>{{ order.OrderID }}</td>
+                            <td>{{ order.CustomerID }}</td>
+                            <td>{{ order.RestaurantID }}</td>
+                            <td>{{ order.RiderID }}</td>
+                            <td>{{ order.Status }}</td>
+                            <td>{{ order.Created }}</td>
+                            <td>{{ order.Modified }}</td>
+                            <!-- <td><button @click="placeOrder(book)" type="button" class="btn btn-primary">Place
                                     Order</button>
-                            </td>
+                            </td> -->
 
                         </tr>
                     </thead>
@@ -108,37 +113,40 @@
             </div>
             <button @click="orderPlaced = false; orderSuccessful = false" class="btn btn-primary">Return to home
                 page</button>
-        </div> <!-- place order -->
+        </div> place order
     </div> <!-- app: container -->
 
     <script>
-        var get_all_URL = "http://localhost:5000/book";
+        var get_all_URL = "http://0.0.0.0:5001/order";
         var place_order_URL = "http://localhost:5100/place_order";
 
         var app = new Vue({
             el: "#app",
             computed: {
                 hasBooks: function () {
-                    return this.books.length > 0;
+                    return this.orders.length > 0;
                 }
             },
             data: {
-                isbn13: "",
-                "books": [],
+                orderID: "",
+                "orders": [],
                 message: "There is a problem retrieving books data, please try again later.",
-                newTitle: "",
-                newISBN13: "",
-                newPrice: "",
-                newAvailability: "",
-                bookAdded: false,
-                addBookError: "",
-                orderedBook: "",
+                newOrderID: "",
+                newCustomerID: "",
+                newRestaurantID: "",
+                newRiderID: "",
+                newStatus: "",
+                newCreated: "",
+                newModified: "",
+                // bookAdded: false,
+                // addBookError: "",
+                // orderedBook: "",
                 orderPlaced: false,
-                orderSuccessful: false,
+                // orderSuccessful: false,
             },
             methods: {
                 getAllBooks: function () {
-                    // on Vue instance created, load the book list
+                    // on Vue instance created, load the order list
                     const response =
                         fetch(get_all_URL)
                             .then(response => response.json())
@@ -148,7 +156,7 @@
                                     // no book in db
                                     this.message = data.message;
                                 } else {
-                                    this.books = data.data.books;
+                                    this.orders = response;
                                 }
                             })
                             .catch(error => {
@@ -169,9 +177,9 @@
                                 if (data.code === 404) {
                                     // no book in db
                                     this.message = data.message;
-                                    this.books = [];
+                                    this.orders = [];
                                 } else {
-                                    this.books = [data.data];
+                                    this.orders = [data.data];
                                 }
                             })
                             .catch(error => {

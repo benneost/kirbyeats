@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd-order'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
-app.config['JSON_SORT_KEYS'] = False #json output will not be sorted
+# app.config['JSON_SORT_KEYS'] = False #json output will not be sorted
 
 db = SQLAlchemy(app)
 
@@ -118,7 +118,7 @@ def create_order():
     cart_item = request.json.get('cart_item')
     for item in cart_item:
         order.order_item.append(Order_Item(
-            book_id=item['book_id'], quantity=item['quantity']))
+            orderID=item['book_id'], quantity=item['quantity']))
 
     try:
         db.session.add(order)
