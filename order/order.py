@@ -12,9 +12,10 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/order'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd-order'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
+app.config['JSON_SORT_KEYS'] = False #json output will not be sorted
 
 db = SQLAlchemy(app)
 
@@ -23,8 +24,10 @@ CORS(app)
 class Order(db.Model):
     __tablename__ = 'order'
 
-    order_id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.String(32), nullable=False)
+    orderID = db.Column(db.Integer, primary_key=True)
+    customerID = db.Column(db.Integer, nullable=False)
+    restaurantID = db.Column(db.Integer, nullable=False)
+    riderID = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(10), nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     modified = db.Column(db.DateTime, nullable=False,
@@ -32,8 +35,10 @@ class Order(db.Model):
 
     def json(self):
         dto = {
-            'order_id': self.order_id,
-            'customer_id': self.customer_id,
+            'orderID': self.orderID,
+            'customerID': self.customerID,
+            'restaurantID': self.restaurantID,
+            'riderID': self.riderID,
             'status': self.status,
             'created': self.created,
             'modified': self.modified
@@ -49,20 +54,19 @@ class Order(db.Model):
 class Order_Item(db.Model):
     __tablename__ = 'order_item'
 
-    item_id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.ForeignKey(
-        'order.order_id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
-
-    book_id = db.Column(db.String(13), nullable=False)
+    itemID = db.Column(db.Integer, primary_key=True)
+    orderID = db.Column(db.ForeignKey(
+        'order.orderID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    foodID = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
-    # order_id = db.Column(db.String(36), db.ForeignKey('order.order_id'), nullable=False)
+    # orderID = db.Column(db.String(36), db.ForeignKey('order.orderID'), nullable=False)
     # order = db.relationship('Order', backref='order_item')
     order = db.relationship(
-        'Order', primaryjoin='Order_Item.order_id == Order.order_id', backref='order_item')
+        'Order', primaryjoin='Order_Item.orderID == Order.orderID', backref='order_item')
 
     def json(self):
-        return {'item_id': self.item_id, 'book_id': self.book_id, 'quantity': self.quantity, 'order_id': self.order_id}
+        return {'itemID': self.itemID, 'orderID': self.orderID, 'foodID': self.foodID, 'quantity': self.quantity}
 
 
 @app.route("/order")
@@ -85,9 +89,9 @@ def get_all():
     ), 404
 
 
-@app.route("/order/<string:order_id>")
-def find_by_order_id(order_id):
-    order = Order.query.filter_by(order_id=order_id).first()
+@app.route("/order/<string:orderID>")
+def find_by_orderID(orderID):
+    order = Order.query.filter_by(orderID=orderID).first()
     if order:
         return jsonify(
             {
@@ -99,7 +103,7 @@ def find_by_order_id(order_id):
         {
             "code": 404,
             "data": {
-                "order_id": order_id
+                "orderID": orderID
             },
             "message": "Order not found."
         }
@@ -108,8 +112,8 @@ def find_by_order_id(order_id):
 
 @app.route("/order", methods=['POST'])
 def create_order():
-    customer_id = request.json.get('customer_id', None)
-    order = Order(customer_id=customer_id, status='NEW')
+    customerID = request.json.get('customerID', None)
+    order = Order(customerID=customerID, status='NEW')
 
     cart_item = request.json.get('cart_item')
     for item in cart_item:
@@ -138,16 +142,16 @@ def create_order():
     ), 201
 
 
-@app.route("/order/<string:order_id>", methods=['PUT'])
-def update_order(order_id):
+@app.route("/order/<string:orderID>", methods=['PUT'])
+def update_order(orderID):
     try:
-        order = Order.query.filter_by(order_id=order_id).first()
+        order = Order.query.filter_by(orderID=orderID).first()
         if not order:
             return jsonify(
                 {
                     "code": 404,
                     "data": {
-                        "order_id": order_id
+                        "orderID": orderID
                     },
                     "message": "Order not found."
                 }
@@ -169,7 +173,7 @@ def update_order(order_id):
             {
                 "code": 500,
                 "data": {
-                    "order_id": order_id
+                    "orderID": orderID
                 },
                 "message": "An error occurred while updating the order. " + str(e)
             }
@@ -177,5 +181,5 @@ def update_order(order_id):
 
 
 if __name__ == '__main__':
-    print("This is flask for " + os.path.basename(__file__) + ": manage orders ...")
+    print("This is flask for KirbyEats" + os.path.basename(__file__) + ": manage orders ...")
     app.run(host='0.0.0.0', port=5001, debug=True)
