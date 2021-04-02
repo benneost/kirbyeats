@@ -12,7 +12,7 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd-order'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd-restaurant'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 # app.config['JSON_SORT_KEYS'] = False #json output will not be sorted
@@ -32,6 +32,15 @@ class Order(db.Model):
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     modified = db.Column(db.DateTime, nullable=False,
                          default=datetime.now, onupdate=datetime.now)
+
+    def __init__(self, orderID, customerID, restaurantID, riderID, status, created, modified):
+        self.orderID, = orderID
+        self.customerID, = customerID
+        self.restaurantID = restaurantID
+        self.riderID = riderID
+        self.status = status
+        self.created = created
+        self.modified = modified
 
     def json(self):
         dto = {
@@ -110,36 +119,42 @@ def find_by_orderID(orderID):
     ), 404
 
 
-@app.route("/order", methods=['POST'])
-def create_order():
-    customerID = request.json.get('customerID', None)
-    order = Order(customerID=customerID, status='NEW')
+@app.route("/order/<string:orderID>", methods=['POST'])
+def create_order(orderID):
+    if (Order.query.filter_by(orderID=orderID).first()):
+        return jsonify(
+            {
+                "code" : 400,
+                "data" : {
+                    "orderID" : orderID
+                },
+                "message" : "Order already exists."
+            }
+        ),400
 
-    cart_item = request.json.get('cart_item')
-    for item in cart_item:
-        order.order_item.append(Order_Item(
-            orderID=item['book_id'], quantity=item['quantity']))
+    data = request.get_json()
+    order = Order(orderID, **data)
 
     try:
         db.session.add(order)
         db.session.commit()
-    except Exception as e:
+    except:
         return jsonify(
             {
-                "code": 500,
-                "message": "An error occurred while creating the order. " + str(e)
+                "code" : 500,
+                "data" : {
+                "orderID" : orderID
+                },
+                "message": "An error occurred creating the order."
             }
-        ), 500
-    
-    print(json.dumps(order.json(), default=str)) # convert a JSON object to a string and print
-    print()
+        ),500
 
     return jsonify(
         {
-            "code": 201,
-            "data": order.json()
+            "code" : 201,
+            "data" : order.json()
         }
-    ), 201
+    ),201
 
 
 @app.route("/order/<string:orderID>", methods=['PUT'])
