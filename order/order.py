@@ -12,7 +12,7 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd-restaurant'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd-order'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 # app.config['JSON_SORT_KEYS'] = False #json output will not be sorted
@@ -33,14 +33,14 @@ class Order(db.Model):
     modified = db.Column(db.DateTime, nullable=False,
                          default=datetime.now, onupdate=datetime.now)
 
-    def __init__(self, orderID, customerID, restaurantID, riderID, status, created, modified):
-        self.orderID, = orderID
-        self.customerID, = customerID
-        self.restaurantID = restaurantID
-        self.riderID = riderID
-        self.status = status
-        self.created = created
-        self.modified = modified
+    # def __init__(self, orderID, customerID, restaurantID, riderID, status, created, modified):
+    #     self.orderID, = orderID
+    #     self.customerID, = customerID
+    #     self.restaurantID = restaurantID
+    #     self.riderID = riderID
+    #     self.status = status
+    #     self.created = created
+    #     self.modified = modified
 
     def json(self):
         dto = {
@@ -118,8 +118,7 @@ def find_by_orderID(orderID):
         }
     ), 404
 
-
-@app.route("/order/<string:orderID>", methods=['POST'])
+@app.route("/order/<string:orderID>", methods=['POST']) #make sure orderID is in URL 
 def create_order(orderID):
     if (Order.query.filter_by(orderID=orderID).first()):
         return jsonify(
@@ -133,29 +132,38 @@ def create_order(orderID):
         ),400
 
     data = request.get_json()
-    order = Order(orderID, **data)
+    order = Order(
+                    orderID= orderID,
+                    customerID= data['customerID'],
+                    restaurantID= data['restaurantID'],
+                    riderID= data['riderID'],
+                    status= data['status'])
+
+    order_item = data['order_item']
+    for item in order_item:
+        order.order_item.append(Order_Item(
+            foodID=item['foodID'], quantity=item['quantity']))
 
     try:
         db.session.add(order)
         db.session.commit()
-    except:
+    except Exception as e:
         return jsonify(
             {
-                "code" : 500,
-                "data" : {
-                "orderID" : orderID
-                },
-                "message": "An error occurred creating the order."
+                "code": 500,
+                "message": "An error occurred while creating the order. " + str(e)
             }
-        ),500
+        ), 500
+    
+    print(json.dumps(order.json(), default=str)) # convert a JSON object to a string and print
+    print()
 
     return jsonify(
         {
-            "code" : 201,
-            "data" : order.json()
+            "code": 201,
+            "data": order.json()
         }
-    ),201
-
+    ), 201
 
 @app.route("/order/<string:orderID>", methods=['PUT'])
 def update_order(orderID):
@@ -172,7 +180,7 @@ def update_order(orderID):
                 }
             ), 404
 
-        # update status
+        #update status
         data = request.get_json()
         if data['status']:
             order.status = data['status']
@@ -183,17 +191,17 @@ def update_order(orderID):
                     "data": order.json()
                 }
             ), 200
+
     except Exception as e:
         return jsonify(
             {
                 "code": 500,
                 "data": {
-                    "orderID": orderID
+                    "order_id": order_id
                 },
                 "message": "An error occurred while updating the order. " + str(e)
             }
         ), 500
-
 
 if __name__ == '__main__':
     print("This is flask for KirbyEats" + os.path.basename(__file__) + ": manage orders ...")
