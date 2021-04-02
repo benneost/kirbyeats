@@ -3,8 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ
 
 app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/hungryfoodie'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get("dbURL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -12,21 +11,21 @@ db = SQLAlchemy(app)
 class Restaurant(db.Model):
     __tablename__ = "restaurant"
 
-    RestaurantID = db.Column(db.Integer, unique = True, primary_key = True)
-    RestaurantName = db.Column(db.String(100), nullable = False)
-    RestaurantContact = db.Column(db.String(8), nullable = False)
-    RestaurantAddress = db.Column(db.String(100), nullable = False)
-    PostalCode = db.Column(db.Integer, nullable = False)
+    restaurantID = db.Column(db.Integer, unique = True, primary_key = True)
+    restaurantName = db.Column(db.String(100), nullable = False)
+    phone = db.Column(db.String(8), nullable = False)
+    address = db.Column(db.String(100), nullable = False)
+    postalCode = db.Column(db.String(8), nullable = False)
 
-    def __init__(self, RestaurantID, RestaurantName, RestaurantContact, RestaurantAddress, PostalCode):
-        self.RestaurantID = RestaurantID
-        self.RestaurantName = RestaurantName
-        self.RestaurantContact = RestaurantContact
-        self.RestaurantAddress = RestaurantAddress
-        self.PostalCode = PostalCode
+    def __init__(self, restaurantID, restaurantName, phone, address, postalCode):
+        self.restaurantID = restaurantID
+        self.restaurantName = restaurantName
+        self.phone = phone
+        self.address = address
+        self.postalCode = postalCode
 
     def json(self):
-        return {"RestaurantID" : self.RestaurantID, "RestaurantName" : self.RestaurantName, "RestaurantContact" : self.RestaurantContact, "RestaurantAddress": self.RestaurantAddress, "PostalCode" : self.PostalCode}
+        return {"restaurantID" : self.restaurantID, "restaurantName" : self.restaurantName, "phone" : self.phone, "address": self.address, "postalCode" : self.postalCode}
 
 @app.route("/restaurant")
 
@@ -48,10 +47,10 @@ def get_all():
         }
     ), 404
 
-@app.route("/restaurant/<string:RestaurantID>")
+@app.route("/restaurant/<string:restaurantID>")
 
-def find_by_restaurantID(RestaurantID):
-    restaurant = Restaurant.query.filter_by(RestaurantID = RestaurantID).first()
+def find_by_restaurantID(restaurantID):
+    restaurant = Restaurant.query.filter_by(restaurantID = restaurantID).first()
     if restaurant:
         return jsonify(
             {
@@ -66,22 +65,22 @@ def find_by_restaurantID(RestaurantID):
         }
     ), 404
 
-@app.route("/restaurant/<string:RestaurantID>", methods=["POST"])
+@app.route("/restaurant/<string:restaurantID>", methods=["POST"])
 
-def create_restaurant(RestaurantID):
-    if (Restaurant.query.filter_by(RestaurantID = RestaurantID).first()):
+def create_restaurant(restaurantID):
+    if (Restaurant.query.filter_by(restaurantID = restaurantID).first()):
         return jsonify(
             {
                 "code" : 400,
                 "data" : {
-                    "RestaurantID" : RestaurantID
+                    "restaurantID" : restaurantID
                 },
                 "message" : "Restaurant already exists."
             }
         ), 400
     
     data = request.get_json()
-    restaurant = Restaurant(RestaurantID, **data)
+    restaurant = Restaurant(restaurantID, **data)
 
     try:
         db.session.add(restaurant)
@@ -91,7 +90,7 @@ def create_restaurant(RestaurantID):
             {
                 "code" : 500,
                 "data" : {
-                    "restaurantID" : RestaurantID
+                    "restaurantID" : restaurantID
                 },
                 "message" : "An error occurred creating the book."
             }
@@ -105,4 +104,4 @@ def create_restaurant(RestaurantID):
     ), 201
 
 if __name__ == "__main__":
-    app.run(host = "0.0.0.0", port=5000, debug=True)
+    app.run(host= "0.0.0.0", port=5000, debug=True)
