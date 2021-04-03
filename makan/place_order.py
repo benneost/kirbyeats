@@ -9,7 +9,7 @@ from invoke import invoke_http
 app = Flask(__name__)
 CORS(app)
 
-restaurant_URL = "http://localhost:5000/restaurant"
+restaurant_URL = "http://localhost:5005/restaurant"
 order_URL = "http://localhost:5002/order"
 rider_URL = "http://localhost:5001/rider"
 activity_log_URL = "http://localhost:5003/activity_log"
@@ -76,6 +76,7 @@ def processPlaceOrder(order):
             "data" : {"order_result" : order_result},
             "message" : "Order creation failure sent for error handling"
         }
+    else: print("\n\nOrder Succesfully Placed\n")
 
     # 5. Send new order to shipping
     # Invoke the shipping record microservice
@@ -92,7 +93,8 @@ def processPlaceOrder(order):
         "code" : 201,
         "data" : {
             "order_result" : order_result
-        }
+        },
+        "message" : "Order Succesfully Placed"
     }
 
 

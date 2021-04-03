@@ -4,7 +4,7 @@ from os import environ
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/hungryfoodie'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd-rider'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -12,21 +12,21 @@ db = SQLAlchemy(app)
 class Rider(db.Model):
     __tablename__ = "rider"
 
-    RiderID = db.Column(db.Integer, unique=True, primary_key=True)
-    RiderName = db.Column(db.String(100), nullable=False)
-    VehicleNo = db.Column(db.String(100), nullable=False)
-    RiderContact = db.Column(db.Integer, nullable=False)
-    PostalCode = db.Column(db.Integer, nullable=False)
+    riderID = db.Column(db.Integer, unique=True, primary_key=True)
+    riderName = db.Column(db.String(100), nullable=False)
+    vehicleNo = db.Column(db.String(100), nullable=False)
+    ridercontact = db.Column(db.Integer, nullable=False)
+    postalcode = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, RiderID, RiderName, VehicleNo, RiderContact, PostalCode):
-        self.RiderID = RiderID
-        self.RiderName = RiderName
-        self.VehicleNo = VehicleNo
-        self.RiderContact = RiderContact
-        self.PostalCode = PostalCode
+    def __init__(self, riderID, riderName, vehicleNo, ridercontact, postalcode):
+        self.riderID = riderID
+        self.riderName = riderName
+        self.vehicleNo = vehicleNo
+        self.ridercontact = ridercontact
+        self.postalcode = postalcode
 
     def json(self):
-        return {"RiderId" : self.RiderID, "RiderName" : self.RiderName, "VehicleNo" : self.VehicleNo, "RiderContact" : self.RiderContact, "PostalCode" : self.PostalCode}
+        return {"RiderId" : self.riderID, "riderName" : self.riderName, "vehicleNo" : self.vehicleNo, "ridercontact" : self.ridercontact, "postalcode" : self.postalcode}
 
 @app.route("/rider")
 def get_all():
@@ -47,9 +47,9 @@ def get_all():
         }
     ),404
 
-@app.route("/rider/<string:RiderID>")
-def find_by_riderID(RiderID):
-    rider = Rider.query.filter_by(RiderID = RiderID).first()
+@app.route("/rider/<string:riderID>")
+def find_by_riderID(riderID):
+    rider = Rider.query.filter_by(riderID = riderID).first()
     if(rider):
         return jsonify(
             {
@@ -64,21 +64,21 @@ def find_by_riderID(RiderID):
         }
     ),404
 
-@app.route("/rider/<string:RiderID>", methods=["POST"])
-def create_rider(RiderID):
-    if (Rider.query.filter_by(RiderID = RiderID).first()):
+@app.route("/rider/<string:riderID>", methods=["POST"])
+def create_rider(riderID):
+    if (Rider.query.filter_by(riderID = riderID).first()):
         return jsonify(
             {
                 "code" : 400,
                 "data" : {
-                    "RiderID" : RiderID
+                    "riderID" : riderID
                 },
                 "message" : "Rider already exists."
             }
         ),400
     
     data = request.get_json()
-    rider = Rider(RiderID, **data)
+    rider = Rider(riderID, **data)
 
     try:
         db.session.add(rider)
@@ -88,7 +88,7 @@ def create_rider(RiderID):
             {
                 "code" : 500,
                 "data" : {
-                    "RiderID" : RiderID
+                    "riderID" : riderID
                 },
                 "message" : "An error occurred when adding a rider."
             }

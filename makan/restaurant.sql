@@ -10,8 +10,8 @@ DROP TABLE IF EXISTS `restaurant`;
 CREATE TABLE `restaurant` (
   `restaurantID` int(100) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `restaurantName` char(100) NOT NULL,
-  `phone` char(8) NOT NULL,
-  `address` varchar(100) NOT NULL,
+  `restaurantContact` char(8) NOT NULL,
+  `restaurantAddress` varchar(100) NOT NULL,
   `postalCode` varchar(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
   
