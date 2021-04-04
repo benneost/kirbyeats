@@ -2,18 +2,23 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import os, sys
+from os import environ
 
 import requests
 from invoke import invoke_http
 
+import amqp_setup
+import pika
+import json
+
 app = Flask(__name__)
 CORS(app)
 
-restaurant_URL = "http://localhost:5005/restaurant"
-order_URL = "http://localhost:5002/order"
-rider_URL = "http://localhost:5001/rider"
-activity_log_URL = "http://localhost:5003/activity_log"
-error_URL = "http://localhost:5004/error"
+restaurant_URL = "http://localhost:5005/restaurant" or environ.get("restaurant_URL")
+order_URL = "http://localhost:5002/order" or environ.get("order_URL")
+rider_URL = "http://localhost:5001/rider" or environ.get("rider_URL")
+activity_log_URL = "http://localhost:5003/activity_log" or environ.get("activity_log_URL")
+error_URL = "http://localhost:5004/error" or environ.get("error_URL")
 
 
 @app.route("/place_order", methods=['POST'])
@@ -27,6 +32,8 @@ def place_order():
             # do the actual work
             # 1. Send order info {cart items}
             result = processPlaceOrder(order)
+            print("'\n------------------------")
+            print("\nresult: ", result)
             return jsonify(result), result["code"]
 
         except Exception as e:
@@ -54,29 +61,75 @@ def processPlaceOrder(order):
     print("\n-----Invoking order microservice-----")
     order_result = invoke_http(order_URL, method="POST", json=order)
     print("order_result:", order_result)
+
+    # Check the order result; if a failure, send it to the error microservice
+    code = order_result["code"]
+    message = json.dumps(order_result)
+
+    amqp_setup.check_setup()
+
+    if code not in range(200,300):
+         # Inform the error microservice
+        #print('\n\n-----Invoking error microservice as order fails-----')
+        print('\n\n-----Publishing the (order error) message with routing_key=order.error-----')
+
+        # invoke_http(error_URL, method="POST", json=order_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        # make message persistent within the matching queues until it is received by some receiver 
+        # (the matching queues have to exist and be durable and bound to the exchange)
+
+        # - reply from the invocation is not used;
+        # continue even if this invocation fails        
+        print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), order_result)
+
+        # 7. Return error
+        return {
+            "code": 500,
+            "data": {"order_result": order_result},
+            "message": "Order creation failure sent for error handling."
+        }
+    
+    # Notice that we are publishing to "Activity Log" only when there is no error in order creation.
+    # In http version, we first invoked "Activity Log" and then checked for error.
+    # Since the "Activity Log" binds to the queue using '#' => any routing_key would be matched 
+    # and a message sent to “Error” queue can be received by “Activity Log” too.
+
+    else:
+        # 4. Record new order
+        # record the activity log anyway
+        #print('\n\n-----Invoking activity_log microservice-----')
+        print('\n\n-----Publishing the (order info) message with routing_key=order.info-----')        
+
+        # invoke_http(activity_log_URL, method="POST", json=order_result)            
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
+            body=message)
+    
+    print("\nOrder published to RabbitMQ Exchange.\n")
     # 4. Record new order
     # record the activity log anyway
-    print("\n\n-----Invoking activity_log microservice-----")
-    invoke_http(activity_log_URL, method="POST", json=order_result)
-    print("\nnOrder sent to activity log. \n")
+    # print("\n\n-----Invoking activity_log microservice-----")
+    # invoke_http(activity_log_URL, method="POST", json=order_result)
+    # print("\nnOrder sent to activity log. \n")
     #- reply from the invocation is not used;
     # continue even if this invocation fails
     # Check the order result; if a failure, send it to the error microservice.
-    code = order_result["code"]
-    if code not in range(200,300):
-        # Inform the error microservice
-        print("\n\n-----Invoking error microservice as order fails-----")
-        invoke_http(error_URL, method="POST", json=order_result)
-        #- reply from the invocation is not used;
-        #continue even if this invocation fails
-        print("Order status ({:d}) sent to the error microservice:".format(code), order_result)
-        # 7. Return error
-        return {
-            "code" : 500,
-            "data" : {"order_result" : order_result},
-            "message" : "Order creation failure sent for error handling"
-        }
-    else: print("\n\nOrder Succesfully Placed\n")
+    # code = order_result["code"]
+    # if code not in range(200,300):
+    #     # Inform the error microservice
+    #     print("\n\n-----Invoking error microservice as order fails-----")
+    #     invoke_http(error_URL, method="POST", json=order_result)
+    #     #- reply from the invocation is not used;
+    #     #continue even if this invocation fails
+    #     print("Order status ({:d}) sent to the error microservice:".format(code), order_result)
+    #     # 7. Return error
+    #     return {
+    #         "code" : 500,
+    #         "data" : {"order_result" : order_result},
+    #         "message" : "Order creation failure sent for error handling"
+    #     }
+    # else: print("\n\nOrder Successfully Placed\n")
 
     # 5. Send new order to shipping
     # Invoke the shipping record microservice
