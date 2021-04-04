@@ -251,6 +251,29 @@ def find_by_riderID(riderID):
         }
     ), 404
 
+#For customer UI to get all orders
+
+@app.route("/order/customer/<string:customerID>")
+def find_by_customerID(customerID):
+    customer = Order.query.filter_by(customerID=customerID).first()
+    
+    if customer:
+        return jsonify(
+            {
+                "code": 200,
+                "data": [customer.json()]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "orderID": orderID
+            },
+            "message": "Order not found."
+        }
+    ), 404
+
 if __name__ == '__main__':
     print("This is flask for KirbyEats" + os.path.basename(__file__) + ": manage orders ...")
     app.run(host='0.0.0.0', port=5002, debug=True)
