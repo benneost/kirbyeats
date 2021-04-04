@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <title>Title</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    </head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <body>
+        <div id="app" class="container">
+            <h1>Rider</h1>
+            <div class="row" v-show="!orderPlaced">
+                <div id="main" class="col-8">
+                    Search by OrderID: <input v-model="order" placeholder="Order ID">
+                    <button @click="findOrder()" type="button" class="my-1 btn btn-sm btn-primary">Search</button><br>
+    
+                    <table class="table table-striped" v-if="hasOrders">
+                        <!-- <table class="table table-striped"> -->
+                        <thead>
+                            <tr>
+                                <th>OrderID</th>
+                                <th>CustomerID</th>
+                                <th>RestaurantID</th>
+                                <th>RiderID</th>
+                                <th>Status</th>
+                                <th>Order Items</th>
+                            </tr>
+                            <tr v-for="order in orders">
+                                <td>{{ order.orderID }}</td>
+                                <td>{{ order.customerID }}</td>
+                                <td>{{ order.restaurantID }}</td>
+                                <td>{{ order.riderID }}</td>
+                                <td>{{ order.status }}</td>
+                                <td>{{order.order_item}}</td>
+                                <!-- <td><button @click="placeOrder(book)" type="button" class="btn btn-primary">Place
+                                        Order</button>
+                                </td> -->
+                                
+                            </tr>
+                        </thead>
+                    </table>
+
+    
+        <script>
+            var riderID = localStorage.getItem("storageName")
+            var get_all_URL = "http://0.0.0.0:5002/order/rider/" + riderID;
+            var place_order_URL = "http://localhost:5100/place_order";
+    
+            var app = new Vue({
+                el: "#app",
+                computed: {
+                    hasOrders: function () {
+                        return this.orders.length > 0;
+                    }
+                },
+                data: {
+                    orderID: "",
+                    orders: [],
+                    message: "There is a problem retrieving books data, please try again later.",
+                    newOrderID: "",
+                    newCustomerID: "",
+                    newRestaurantID: "",
+                    newRiderID: "",
+                    newStatus: "",
+                    newCreated: "",
+                    newModified: "",
+                    bookAdded: false,
+                    addBookError: "",
+                    orderedBook: "",
+                    orderPlaced: false,
+                    orderSuccessful: false,
+                },
+                methods: {
+                    getAllOrders: function () {
+                        // on Vue instance created, load the order list
+                        const response =
+                            fetch(get_all_URL)
+                                .then(response => response.json())
+                                .then(data => {
+                                    // console.log(response);
+                                    if (data.code === 404) {
+                                        // no book in db
+                                        this.message = data.message;
+                                    } else {
+                                        this.orders = data.data;
+                                    }
+                                })
+                                .catch(error => {
+                                    // Errors when calling the service; such as network error, 
+                                    // service offline, etc
+                                    console.log(this.message + error);
+    
+                                });
+    
+                    },
+                    
+                },
+                created: function () {
+                    // on Vue instance created, load the book list
+                    this.getAllOrders();
+                }
+            });
+        </script>
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    </body>
+    
+    </html>

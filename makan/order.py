@@ -215,7 +215,7 @@ def find_by_restaurantID(restaurantID):
         return jsonify(
             {
                 "code": 200,
-                "data": restaurant.json()
+                "data": [restaurant.json()]
             }
         )
     return jsonify(
@@ -238,7 +238,7 @@ def find_by_riderID(riderID):
         return jsonify(
             {
                 "code": 200,
-                "data": rider.json()
+                "data": [rider.json()]
             }
         )
     return jsonify(
