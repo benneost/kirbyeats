@@ -12,7 +12,7 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd-order'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd-order'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 # app.config['JSON_SORT_KEYS'] = False #json output will not be sorted
@@ -204,6 +204,52 @@ def update_order(orderID):
                 "message": "An error occurred while updating the order. " + str(e)
             }
         ), 500
+
+#For restaurant UI to get all orders
+
+@app.route("/order/restaurant/<string:restaurantID>")
+def find_by_restaurantID(restaurantID):
+    restaurant = Order.query.filter_by(restaurantID=restaurantID).first()
+    
+    if restaurant:
+        return jsonify(
+            {
+                "code": 200,
+                "data": restaurant.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "orderID": orderID
+            },
+            "message": "Order not found."
+        }
+    ), 404
+
+#For rider UI to get all orders
+
+@app.route("/order/rider/<string:riderID>")
+def find_by_riderID(riderID):
+    rider = Order.query.filter_by(riderID=riderID).first()
+    
+    if rider:
+        return jsonify(
+            {
+                "code": 200,
+                "data": rider.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "orderID": orderID
+            },
+            "message": "Order not found."
+        }
+    ), 404
 
 if __name__ == '__main__':
     print("This is flask for KirbyEats" + os.path.basename(__file__) + ": manage orders ...")
