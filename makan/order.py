@@ -12,7 +12,7 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd-order'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd-order'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 # app.config['JSON_SORT_KEYS'] = False #json output will not be sorted
@@ -205,7 +205,119 @@ def update_order(orderID):
             }
         ), 500
 
-#For restaurant UI to get all orders
+@app.route("/order/collected/<string:orderID>", methods=['PUT']) #update order status = "COLLECTED"
+def collected(orderID):
+    try:
+        order = Order.query.filter_by(orderID=orderID).first()
+        if not order:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "orderID": orderID
+                    },
+                    "message": "Order not found."
+                }
+            ), 404
+
+        #update status
+        data = request.get_json()
+        
+        order.status = 'COLLECTED'
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": order.json()
+            }
+        ), 200
+
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "order_id": order_id
+                },
+                "message": "An error occurred while updating the order. " + str(e)
+            }
+        ), 500
+
+@app.route("/order/ontheway/<string:orderID>", methods=['PUT']) #update order status = "ONTHEWAY"
+def ontheway(orderID):
+    try:
+        order = Order.query.filter_by(orderID=orderID).first()
+        if not order:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "orderID": orderID
+                    },
+                    "message": "Order not found."
+                }
+            ), 404
+
+        #update status
+        data = request.get_json()
+        
+        order.status = 'ON THE WAY'
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": order.json()
+            }
+        ), 200
+
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "order_id": order_id
+                },
+                "message": "An error occurred while updating the order. " + str(e)
+            }
+        ), 500
+
+@app.route("/order/completed/<string:orderID>", methods=['PUT']) #update order status = "COMPLETED"
+def completed(orderID):
+    try:
+        order = Order.query.filter_by(orderID=orderID).first()
+        if not order:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "orderID": orderID
+                    },
+                    "message": "Order not found."
+                }
+            ), 404
+
+        #update status
+        data = request.get_json()
+        
+        order.status = 'COMPLETED'
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": order.json()
+            }
+        ), 200
+
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "order_id": order_id
+                },
+                "message": "An error occurred while updating the order. " + str(e)
+            }
+        ), 500
 
 @app.route("/order/restaurant/<string:restaurantName>")
 def find_by_restaurantName(restaurantName):
