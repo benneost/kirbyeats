@@ -1,32 +1,35 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from os import environ
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd-restaurant'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd-restaurant'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+CORS(app)
+
 
 class Restaurant(db.Model):
     __tablename__ = "restaurant"
 
     restaurantID = db.Column(db.Integer, unique = True, primary_key = True)
     restaurantName = db.Column(db.String(100), nullable = False)
-    restaurantContact = db.Column(db.String(8), nullable = False)
-    restaurantAddress = db.Column(db.String(100), nullable = False)
+    phone = db.Column(db.String(8), nullable = False)
+    address = db.Column(db.String(100), nullable = False)
     postalCode = db.Column(db.Integer, nullable = False)
 
-    def __init__(self, restaurantID, restaurantName, restaurantContact, restaurantAddress, postalCode):
+    def __init__(self, restaurantID, restaurantName, phone, address, postalCode):
         self.restaurantID = restaurantID
         self.restaurantName = restaurantName
-        self.restaurantContact = restaurantContact
-        self.restaurantAddress = restaurantAddress
+        self.phone = phone
+        self.address = address
         self.postalCode = postalCode
 
     def json(self):
-        return {"restaurantID" : self.restaurantID, "restaurantName" : self.restaurantName, "restaurantContact" : self.restaurantContact, "restaurantAddress": self.restaurantAddress, "postalCode" : self.postalCode}
+        return {"restaurantID" : self.restaurantID, "restaurantName" : self.restaurantName, "phone" : self.phone, "address": self.address, "postalCode" : self.postalCode}
 
 class Food(db.Model):
     __tablename__ = "food"
@@ -41,8 +44,8 @@ class Food(db.Model):
         self.foodID = foodID
         self.restaurantID = restaurantID
         self.foodName = foodName
-        self.restaurantAddress = restaurantAddress
-        self.postalCode = postalCode
+        self.description = description
+        self.price = price
 
     def json(self):
         return {"foodID" : self.foodID, "restaurantID" : self.restaurantID, "foodName" : self.foodName, "description": self.description, "price" : self.price}
@@ -124,4 +127,4 @@ def create_restaurant(restaurantID):
     ), 201
 
 if __name__ == "__main__":
-    app.run(host = "0.0.0.0", port=5005, debug=True)
+    app.run(port=5005, debug=True)

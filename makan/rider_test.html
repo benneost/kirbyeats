@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.js"></script>
+<body>
+    <div id="app" class="container">
+        <h1>Rider</h1>
+        <table border=1>
+            <tr>
+                <th>CustomerID</th>
+                <th>ItemID</th>
+                <th>RestaurantID</th>
+            </tr>
+            <tr>
+                <td>{{CustomerID}}</td>
+                <td>{{Item}}</td>
+                <td>{{RestaurantID}}</td>
+            </tr>
+        </table>
+        
+    </div>
+
+    <div id="customer" class="container">
+        <h1>Customer</h1>
+        <table border=1>
+            <tr>
+                <th>Customer</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th>Postal</th>
+            </tr>
+            <tr>
+                <td>{{ Name }}</td>
+                <td>{{ Phone }}</td>
+                <td>{{ Address }}</td>
+                <td>{{ Postal }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    
+    
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                CustomerID : null,
+                Item : null,
+                RestaurantID : null,
+                Name: null,
+                Phone: null,
+                Address: null,
+                Postal: null
+
+            },
+            created: function(){
+                axios.get("http://127.0.0.1:5002/order/rider/1")
+                .then(response=>{
+                    order = response.data.data
+                    console.log(order)
+                    this.CustomerID = order.customerID
+                    this.Item = order.order_item[0].itemID
+                    this.RestaurantID = order.restaurantID
+                    
+                    
+                })
+                .catch(error =>{
+                    this.restaurants = [{entry: "there was an error: " + error.message}]
+                })
+            }
+            
+        })
+
+        new Vue({
+            el: "#customer",
+            data: {
+                Name: null,
+                Phone: null,
+                Address: null,
+                Postal: null
+            },
+            created: function(){
+                axios.get("http://127.0.0.1:5006/customer/1")
+                .then(response=>{
+                    cust = response.data.data
+                    this.Name = cust.customerName
+                    this.Phone = cust.phone
+                    this.Address = cust.address
+                    this.Postal = cust.postalCode                    
+                
+                })
+                .catch(error =>{
+                    this.restaurants = [{entry: "there was an error: " + error.message}]
+                })
+            }
+        })
+    </script>
+</body>
+</html>

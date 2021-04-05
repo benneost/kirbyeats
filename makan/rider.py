@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from os import environ
 
 app = Flask(__name__)
@@ -8,6 +9,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconn
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+CORS(app)
 
 class Rider(db.Model):
     __tablename__ = "rider"
@@ -101,4 +104,4 @@ def create_rider(riderID):
         }, 201
     )
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(port=5001, debug=True)
