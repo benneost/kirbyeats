@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer-Food Selection</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.js"></script>
+</head>
+<body>
+    <div id ="app">
+        <table border=1>
+            <tr>
+                <th>Food Name</th>
+                <th>Price</th>
+                <th>Description</th>
+            </tr>
+
+            <tr v-for="food in foods">
+                <td>{{ food.foodName }}</td>
+                <td>{{ food.price }}</td>
+                <td>{{ food.description }}</td>
+            </tr>
+        </table>
+    </div>
+    
+
+
+
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                foods: []
+            },
+            created: function(){
+                axios.get("http://127.0.0.1:5005/restaurant/food/1")
+                .then(response=>{
+                    cart = response.data.data
+                    this.foods = cart
+                    console.log(this.foods)
+                    
+                    
+                    
+                })
+                .catch(error =>{
+                    this.restaurants = [{entry: "there was an error: " + error.message}]
+                })
+            }
+        })
+    </script>
+</body>
+</html>
