@@ -12,7 +12,7 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd-order'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd-order'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 # app.config['JSON_SORT_KEYS'] = False #json output will not be sorted
@@ -25,18 +25,18 @@ class Order(db.Model):
     __tablename__ = 'order'
 
     orderID = db.Column(db.Integer, primary_key=True)
-    customerID = db.Column(db.Integer, nullable=False)
-    restaurantID = db.Column(db.Integer, nullable=False)
+    customerName = db.Column(db.String(100), nullable=False)
+    restaurantName = db.Column(db.String(100), nullable=False)
     riderID = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(10), nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     modified = db.Column(db.DateTime, nullable=False,
                          default=datetime.now, onupdate=datetime.now)
 
-    # def __init__(self, orderID, customerID, restaurantID, riderID, status, created, modified):
+    # def __init__(self, orderID, customerName, restaurantName, riderID, status, created, modified):
     #     self.orderID, = orderID
-    #     self.customerID, = customerID
-    #     self.restaurantID = restaurantID
+    #     self.customerName, = customerName
+    #     self.restaurantName = restaurantName
     #     self.riderID = riderID
     #     self.status = status
     #     self.created = created
@@ -45,8 +45,8 @@ class Order(db.Model):
     def json(self):
         dto = {
             'orderID': self.orderID,
-            'customerID': self.customerID,
-            'restaurantID': self.restaurantID,
+            'customerName': self.customerName,
+            'restaurantName': self.restaurantName,
             'riderID': self.riderID,
             'status': self.status,
             'created': self.created,
@@ -66,7 +66,7 @@ class Order_Item(db.Model):
     itemID = db.Column(db.Integer, primary_key=True)
     orderID = db.Column(db.ForeignKey(
         'order.orderID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
-    foodID = db.Column(db.Integer, nullable=False)
+    foodName = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
     # orderID = db.Column(db.String(36), db.ForeignKey('order.orderID'), nullable=False)
@@ -75,7 +75,7 @@ class Order_Item(db.Model):
         'Order', primaryjoin='Order_Item.orderID == Order.orderID', backref='order_item')
 
     def json(self):
-        return {'itemID': self.itemID, 'orderID': self.orderID, 'foodID': self.foodID, 'quantity': self.quantity}
+        return {'itemID': self.itemID, 'orderID': self.orderID, 'foodName': self.foodName, 'quantity': self.quantity}
 
 
 @app.route("/order")
@@ -136,15 +136,15 @@ def create_order():
     data = request.get_json()
     order = Order(
                     orderID= orderID,
-                    customerID= data['customerID'],
-                    restaurantID= data['restaurantID'],
+                    customerName= data['customerName'],
+                    restaurantName= data['restaurantName'],
                     riderID= data['riderID'],
                     status= data['status'])
 
     order_item = data['order_item']
     for item in order_item:
         order.order_item.append(Order_Item(
-            foodID=item['foodID'], quantity=item['quantity']))
+            foodName=item['foodName'], quantity=item['quantity']))
 
     try:
         db.session.add(order)
@@ -207,9 +207,9 @@ def update_order(orderID):
 
 #For restaurant UI to get all orders
 
-@app.route("/order/restaurant/<string:restaurantID>")
-def find_by_restaurantID(restaurantID):
-    restaurant = Order.query.filter_by(restaurantID=restaurantID).first()
+@app.route("/order/restaurant/<string:restaurantName>")
+def find_by_restaurantName(restaurantName):
+    restaurant = Order.query.filter_by(restaurantName=restaurantName).first()
     
     if restaurant:
         return jsonify(
@@ -253,9 +253,9 @@ def find_by_riderID(riderID):
 
 #For customer UI to get all orders
 
-@app.route("/order/customer/<string:customerID>")
-def find_by_customerID(customerID):
-    customer = Order.query.filter_by(customerID=customerID).first()
+@app.route("/order/customer/<string:customerName>")
+def find_by_customerName(customerName):
+    customer = Order.query.filter_by(customerName=customerName).first()
     
     if customer:
         return jsonify(
