@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <title>CustomerUI</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    </head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.js"></script>
+
+    <div id="app" class="container">
+        <h1>Restaurants Available</h1>
+        <table border=1>
+            <tr>
+                <th>RestaurantID</th>
+                <th>RestaurantName</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Postal</th>
+                
+            </tr>
+            <tr v-for="restaurant in restaurants">
+                <td>{{ restaurant.restaurantID }}</td>
+                <td>{{ restaurant.restaurantName }}</td>
+                <td>{{ restaurant.restaurantContact }}</td>
+                <td>{{ restaurant.restaurantAddress }}</td>
+                <td>{{ restaurant.postalCode }}</td>
+                <td><button id="go" onclick="gotoRestaurant()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+                  </svg></button></td>
+                
+            </tr>
+        </table>
+
+        <table class="table table-striped" v-if="hasOrders">
+            <!-- <table class="table table-striped"> -->
+            <thead>
+                <tr>
+                    <th>OrderID</th>
+                    <th>CustomerID</th>
+                    <th>RestaurantID</th>
+                    <th>RiderID</th>
+                    <th>Status</th>
+                    <th>Order Items</th>
+                    <!-- <th>Traveling Time</th>
+                    <th>Distance</th> -->
+                </tr>
+                <tr v-for="order in orders">
+                    <td>{{ order.orderID }}</td>
+                    <td>{{ order.customerName }}</td>
+                    <td>{{ order.restaurantName }}</td>
+                    <td>{{ order.riderID }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>{{order.order_item}}</td>
+                    <!-- <td>{{ timeDist.time }}</td>
+                    <td>{{ timeDist.distance }}</td> -->
+                    <!-- <td><button @click="placeOrder(book)" type="button" class="btn btn-primary">Place
+                            Order</button>
+                    </td> -->
+                    
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <script>
+        function gotoRestaurant(){
+            
+        }
+    </script>
+
+    <script>
+        var get_all_URL = "http://0.0.0.0:5002/order/customer/Benjamin";
+
+        new Vue({
+            el:"#app",
+            data: {
+                restaurants : [],
+                message: null,
+                hasOrders : true,
+                orders : []
+            },
+            methods: {
+                getAllOrders: function () {
+                        // on Vue instance created, load the order list
+                        const response =
+                            fetch(get_all_URL)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(response);
+                                    if (data.code === 404) {
+                                        // no book in db
+                                        this.message = data.message;
+                                    } else {
+                                        this.orders = data.data;
+                                        console.log(this.orders);
+                                    }
+                                })
+                                // .catch(error => {
+                                //     // Errors when calling the service; such as network error, 
+                                //     // service offline, etc
+                                //     console.log(this.message + error);
+    
+                                // });
+    
+                },
+            },
+            created: function(){
+                axios.get("http://127.0.0.1:5005/restaurant")
+                .then(response=>{
+                    rests = response.data.data.restaurants
+                    this.restaurants = rests
+                    
+                    console.log(this.restaurants)
+                    
+                })
+                .catch(error =>{
+                    this.message = [{entry: "there was an error: " + error.message}]
+                })
+            },
+            created: function(){
+                axios.get("http://127.0.0.1:5002/order/customer/Benjamin")
+                .then(response=>{
+                    ord = response.data.data
+                    console.log(ord)
+                    this.orders = [ord]
+                    console.log(this.orders)
+                    
+                    
+                })
+                .catch(error =>{
+                    this.restaurants = [{entry: "there was an error: " + error.message}]
+                })
+            }
+            
+        })
+    </script>
+    
+    
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    </body>
+    
+    </html>

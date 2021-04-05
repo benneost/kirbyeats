@@ -1,39 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RestaurantUI</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>Document</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="css/Table_Responsive_v2/image/png" href="css/Table_Responsive_v2/images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Table_Responsive_v2/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Table_Responsive_v2/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Table_Responsive_v2/vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Table_Responsive_v2/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Table_Responsive_v2/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Table_Responsive_v2/css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/Table_Responsive_v2/css/main.css">
+<!--===============================================================================================-->
+<style>
+	.bg-cover {
+		background-size: cover !important;
+	}
+</style>
 </head>
+
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.js"></script>
-<body>
-    <div id="app" class="container">
-        <h1>Restaurant</h1>
 
-        <table border=1>
-            <tr>
-                <th>CustomerID</th>
-                <th>OrderID</th>
-                <th>ItemID</th>
-                <th>RiderID</th>
-            </tr>
-            <tr>
-                <td>{{CustomerID}}</td>
-                <td>{{OrderID}}</td>
-                <td>{{ItemID}}</td>
-                <td>{{RiderID}}</td>
-            </tr>
-        </table>
-    </div>
+<body>
+	<div style="background-image: url(img/header2.jpg);" class="jumbotron bg-cover text-white limiter" >
+		<div class="container py-5 text-center">
+			<h1 class="display-4 font-weight-bold">Restaurant</h1>
+		</div>
+	</div>
+	<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+					<div class="table" id='app'>
+
+						<div class="row header">
+							<div class="cell">
+								Customer ID
+							</div>
+							<div class="cell">
+								Order ID
+							</div>
+							<div class="cell">
+								Item ID
+							</div>
+							<div class="cell">
+								Rider ID
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="cell" data-title="Customer ID">
+								{{CustomerID}}
+							</div>
+							<div class="cell" data-title="Order ID">
+								{{OrderID}}
+							</div>
+							<div class="cell" data-title="Item ID">
+								{{ItemID}}
+							</div>
+							<div class="cell" data-title="Rider ID">
+								{{RiderID}}
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="cell" data-title="Customer ID">
+								2
+							</div>
+							<div class="cell" data-title="Order ID">
+								2
+							</div>
+							<div class="cell" data-title="Item ID">
+								2
+							</div>
+							<div class="cell" data-title="Rider ID">
+								2
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="cell" data-title="Customer ID">
+								3
+							</div>
+							<div class="cell" data-title="Order ID">
+								3
+							</div>
+							<div class="cell" data-title="Item ID">
+								3
+							</div>
+							<div class="cell" data-title="Rider ID">
+								3
+							</div>
+						</div>
+
+					</div>
+			</div>
+		</div>
+	</div>
+
+
+	
+
+<!--===============================================================================================-->	
+	<script src="css/Table_Responsive_v2/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="css/Table_Responsive_v2/vendor/bootstrap/js/popper.js"></script>
+	<script src="css/Table_Responsive_v2/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="css/Table_Responsive_v2/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="css/Table_Responsive_v2/js/main.js"></script>
 
     <script>
         new Vue({

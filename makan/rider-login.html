@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Customer Log In</title>
+	<title>Restaurant Log In</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
@@ -36,7 +36,7 @@
 			
 			<div class="wrap-login100">
 				<div style="text-align: center;">
-					<img src="img/customer.jpg" width="300" height="300" style="padding: 20px;"/>
+					<img src="img/rider.jpg" width="300" height="300" style="padding: 20px;"/>
 				</div>
 
 				<form class="login100-form validate-form">
@@ -61,7 +61,7 @@
 						</button>
           </div>
                     
-          <div class="flex-sb-m w-full p-b-30" style="color:rgb(253, 133, 133)">
+          <div class="flex-sb-m w-full p-b-30" style="color:red">
           </div>
 				</form>
 			</div>
@@ -86,12 +86,13 @@
 	<script src="css/Login_template/js/main.js"></script>
 
   <script>
-
     function loginSuccessful() {
+        // location.href = "rider.html"
         var getInput = document.getElementById("login").value;
         localStorage.setItem("storageName",getInput);
-        window.location = 'customer-restaurant.html';
+        window.location = 'rider.html';
     }
+    
   </script>
 
 </body>
