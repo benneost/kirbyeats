@@ -40,7 +40,7 @@ home = "Singapore 520334"
 
 @app.route('/gmaps/<string:destination>', methods=['GET', 'POST'])
 def calculate_time(destination):
-    origin = "Singapore 520334"
+    origin = "Singapore 529757"
     api_key = "AIzaSyDeWOuGGRp5f4LIa2HC2jL0qcKLJeB82WE"
 
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
