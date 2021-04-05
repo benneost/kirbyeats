@@ -43,13 +43,13 @@
 
 						<div class="row header">
 							<div class="cell">
-								Customer ID
+								Customer Name
 							</div>
 							<div class="cell">
 								Order ID
 							</div>
 							<div class="cell">
-								Item ID
+								Food Name
 							</div>
 							<div class="cell">
 								Rider ID
@@ -67,7 +67,7 @@
 								{{ItemID}}
 							</div>
 							<div class="cell" data-title="Rider ID">
-								{{RiderID}}
+								{{Status}}
 							</div>
 						</div>
 
@@ -126,7 +126,7 @@
                 CustomerID : null,
                 OrderID: null,
                 ItemID: null,
-                RiderID: null,
+                Status: null,
                 message : null
             },
             created: function(){
@@ -137,7 +137,7 @@
                     this.CustomerID = objs.customerName
                     this.OrderID = objs.orderID
                     this.ItemID = objs.order_item[0]["foodName"]
-                    this.RiderID = objs.riderID
+                    this.Status = objs.status
                 })
                 .catch(error =>{
                     this.message = [{entry: "there was an error: " + error.message}]
