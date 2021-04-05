@@ -36,7 +36,7 @@
 			<h1 class="display-4 font-weight-bold">Restaurant Details</h1>
 		</div>
 	</div>
-	<div class="limiter">
+	<div class="limiter" >
 		<div class="container-table100">
 			<div class="wrap-table100">
 					<div class="table" id='app'>
@@ -115,6 +115,7 @@
                         <div class="row" v-for="order in orders">
 							<div class="cell" data-title="Order ID">
 								{{ order.orderID }}
+                                asd
 							</div>
 							<div class="cell" data-title="Customer Name">
 								{{ order.customerName }}
@@ -162,7 +163,6 @@
                 restaurants : [],
                 message: null,
                 hasOrders : true,
-                // orders : {}
             },
             // methods: {
             //     getAllOrders: function () {
@@ -204,8 +204,6 @@
             }
         })
 
-        var get_all_URL = "http://0.0.0.0:5002/order/customer/Benjamin";
-
         new Vue({
             el: "#customer",
             data: {
@@ -219,30 +217,6 @@
                 orders : []
 
             },
-            // methods: {
-            //     getAllOrders: function () {
-            //             // on Vue instance created, load the order list
-            //             const response =
-            //                 fetch(get_all_URL)
-            //                     .then(response => response.json())
-            //                     .then(data => {
-            //                         if (data.code === 404) {
-            //                             // no book in db
-            //                             this.message = data.message;
-            //                         } else {
-            //                             this.orders = data.data;
-            //                             console.log(this.orders);
-            //                         }
-            //                     })
-            //                     .catch(error => {
-            //                         // Errors when calling the service; such as network error, 
-            //                         // service offline, etc
-            //                         console.log(this.message + error);
-    
-            //                     });
-    
-            //     },
-            // },
             created: function(){
                 axios.get("http://127.0.0.1:5002/order/customer/Benjamin")
                 .then(response=>{
@@ -250,17 +224,12 @@
                     console.log(ord)
                     this.orders = [ord]
                     console.log(this.orders)
-                    // this.OrderID = order.orderID
-                    // console.log(this.order["orderID"])
-                    // this.Item = order.order_item[0].itemID
-                    // this.RestaurantName = order.restaurantName
                     
                     
                 })
                 .catch(error =>{
                     this.restaurants = [{entry: "there was an error: " + error.message}]
                 })
-                // this.getAllOrders
             }
             
         })

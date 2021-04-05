@@ -85,7 +85,7 @@
                 restaurants : [],
                 message: null,
                 hasOrders : true,
-                orders : {}
+                orders : []
             },
             methods: {
                 getAllOrders: function () {
@@ -124,7 +124,22 @@
                 .catch(error =>{
                     this.message = [{entry: "there was an error: " + error.message}]
                 })
+            },
+            created: function(){
+                axios.get("http://127.0.0.1:5002/order/customer/Benjamin")
+                .then(response=>{
+                    ord = response.data.data
+                    console.log(ord)
+                    this.orders = [ord]
+                    console.log(this.orders)
+                    
+                    
+                })
+                .catch(error =>{
+                    this.restaurants = [{entry: "there was an error: " + error.message}]
+                })
             }
+            
         })
     </script>
     
