@@ -17,19 +17,19 @@ class Restaurant(db.Model):
 
     restaurantID = db.Column(db.Integer, unique = True, primary_key = True)
     restaurantName = db.Column(db.String(100), nullable = False)
-    phone = db.Column(db.String(8), nullable = False)
-    address = db.Column(db.String(100), nullable = False)
+    restaurantContact = db.Column(db.String(8), nullable = False)
+    restaurantAddress = db.Column(db.String(100), nullable = False)
     postalCode = db.Column(db.Integer, nullable = False)
 
-    def __init__(self, restaurantID, restaurantName, phone, address, postalCode):
+    def __init__(self, restaurantID, restaurantName, restaurantContact, restaurantAddress, postalCode):
         self.restaurantID = restaurantID
         self.restaurantName = restaurantName
-        self.phone = phone
-        self.address = address
+        self.restaurantContact = restaurantContact
+        self.restaurantAddress = restaurantAddress
         self.postalCode = postalCode
 
     def json(self):
-        return {"restaurantID" : self.restaurantID, "restaurantName" : self.restaurantName, "phone" : self.phone, "address": self.address, "postalCode" : self.postalCode}
+        return {"restaurantID" : self.restaurantID, "restaurantName" : self.restaurantName, "restaurantContact" : self.restaurantContact, "restaurantAddress": self.restaurantAddress, "postalCode" : self.postalCode}
 
 class Food(db.Model):
     __tablename__ = "food"

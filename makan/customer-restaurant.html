@@ -2,7 +2,7 @@
 <html lang="en">
 
     <head>
-        <title>Title</title>
+        <title>CustomerUI</title>
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,9 +16,25 @@
     <script src="https://unpkg.com/axios/dist/axios.js"></script>
 
     <div id="app" class="container">
-        <h1>Rider</h1>
-        <table border=1 v-for="restaurant of restaurants">
-            <tr>{{restaurant.address}}</tr>
+        <h1>Restaurants Available</h1>
+        <table border=1>
+            <tr>
+                <th>RestaurantID</th>
+                <th>RestaurantName</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Postal</th>
+                
+            </tr>
+            <tr v-for="restaurant in restaurants">
+                <td>{{ restaurant.restaurantID }}</td>
+                <td>{{ restaurant.restaurantName }}</td>
+                <td>{{ restaurant.restaurantContact }}</td>
+                <td>{{ restaurant.restaurantAddress }}</td>
+                <td>{{ restaurant.postalCode }}</td>
+                
+                
+            </tr>
         </table>
     </div>
 
@@ -26,7 +42,7 @@
         new Vue({
             el:"#app",
             data: {
-                restaurants : null,
+                restaurants : [],
                 message: null
             },
             created: function(){
@@ -34,6 +50,7 @@
                 .then(response=>{
                     rests = response.data.data.restaurants
                     this.restaurants = rests
+                    
                     console.log(this.restaurants)
                     
                 })
