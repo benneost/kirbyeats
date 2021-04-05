@@ -5,7 +5,7 @@ from os import environ
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd-restaurant'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd-restaurant'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -125,6 +125,24 @@ def create_restaurant(restaurantID):
             "data" : restaurant.json()
         }
     ), 201
+
+@app.route("/restaurant/food/<string:restaurantID>")
+
+def find_food_by_restaurantID(restaurantID):
+    foods = Food.query.filter_by(restaurantID = restaurantID).all()
+    if foods:
+        return jsonify(
+            {
+                "code" : 200,
+                "data" : [food.json() for food in foods]
+            }
+        )
+    return jsonify(
+        {
+            "code" : 404,
+            "message" : "Restaurant not found."
+        }
+    ), 404  
 
 if __name__ == "__main__":
     app.run(port=5005, debug=True)
