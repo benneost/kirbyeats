@@ -20,15 +20,15 @@
         <h1>Rider</h1>
         <table border=1>
             <tr>
-                <th>CustomerID</th>
+                <th>CustomerName</th>
                 <th>ItemID</th>
-                <th>RestaurantID</th>
+                <th>RestaurantName</th>
                 
             </tr>
             <tr>
-                <td>{{CustomerID}}</td>
+                <td>{{CustomerName}}</td>
                 <td>{{Item}}</td>
-                <td>{{RestaurantID}}</td>
+                <td>{{RestaurantName}}</td>
                 
             </tr>
         </table>
@@ -63,9 +63,9 @@
         new Vue({
             el: "#app",
             data: {
-                CustomerID : null,
+                CustomerName : null,
                 Item : null,
-                RestaurantID : null,
+                RestaurantName : null,
                 Name: null,
                 Phone: null,
                 Address: null,
@@ -77,9 +77,9 @@
                 .then(response=>{
                     order = response.data.data
                     console.log(order)
-                    this.CustomerID = order.customerID
+                    this.CustomerName = order.customerName
                     this.Item = order.order_item[0].itemID
-                    this.RestaurantID = order.restaurantID
+                    this.RestaurantName = order.restaurantName
                     
                     
                 })
