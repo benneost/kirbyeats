@@ -87,6 +87,24 @@ def find_by_restaurantID(restaurantID):
             "message" : "Restaurant not found."
         }
     ), 404
+    
+
+@app.route("/restaurant/rider/<string:restaurantName>", methods=["GET"])
+def find_by_restaurantName(restaurantName):
+    restaurant = Restaurant.query.filter_by(restaurantName = restaurantName).first()
+    if restaurant:
+        return jsonify(
+            {
+                "code" : 200,
+                "data" : restaurant.json()
+            }
+        )
+    return jsonify(
+        {
+            "code" : 404,
+            "message" : "Restaurant not found."
+        }
+    ), 404
 
 @app.route("/restaurant/<string:restaurantID>", methods=["POST"])
 

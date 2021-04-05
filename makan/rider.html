@@ -73,13 +73,13 @@
 								{{RestaurantName}}
 							</div>
 							<div class="cell" data-title="Postal">
-								postal
+								{{ Postal }}
 							</div>
                             <div class="cell" data-title="Travel Time">
-								time
+								{{ appTimeDist.time }}
 							</div>
                             <div class="cell" data-title="Distance" style="padding: 30px;">
-								dist
+								{{ appTimeDist.distance }}
 							</div>
 						</div>
 
@@ -123,7 +123,7 @@
 								{{ Address }}
 							</div>
 							<div class="cell" data-title="Postal">
-								{{ Postal }}
+								{{ PostalCust }}
 							</div>
                             <div class="cell" data-title="Travel Time">
 								{{ timeDist.time }}
@@ -152,8 +152,12 @@
 	<script src="css/Table_Responsive_v2/js/main.js"></script>
 
     <script>
+
+		var get_rest_URL = "http://localhost:5005/restaurant/rider/Kopitiam";
+		console.log(get_rest_URL);
+		
         new Vue({
-            el: "#app",
+            el: "#app", 
             data: {
                 CustomerName : null,
                 Item : null,
@@ -161,8 +165,55 @@
                 Name: null,
                 Phone: null,
                 Address: null,
-                Postal: null
+                Postal: null,
+				appTimeDist : []
+            },
+			methods: {
+                getRestaurantPostal: function () {
+                        // on Vue instance created, load the order list
+                        const response =
+                            fetch(get_rest_URL)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.code === 404) {
+                                        // no book in db
+                                        this.message = data.message;
+                                    } else {
+                                        this.Postal = data.data.postalCode;
+										this.restPostal = data.data.postalCode;
+                                        console.log(this.restPostal);
+                                    }
+                                })
+                                .catch(error => {
+                                    // Errors when calling the service; such as network error, 
+                                    // service offline, etc
+                                    console.log(this.message + error);
+    
+                                });
+    
+                },
+				getTimeDist: function () {
+                    var get_distance_URL = "http://127.0.0.1:5007/gmaps/" + "529509"; //destination is hardcoded for now
+                    const response =
+                        fetch(get_distance_URL)
+                            .then(response => response.json())
+                            .then(data => {
+                                // console.log(response);
+                                if (data.code === 404) {
+                                    // no book in db
+                                    this.message = data.message;
+                                } else {
+                                    this.appTimeDist = data.data;
+									console.log(this.appTimeDist)
+                                }
+                            })
+                            .catch(error => {
+                                // Errors when calling the service; such as network error, 
+                                // service offline, etc
+                                console.log(this.message + error);
 
+                            });
+                }
             },
             created: function(){
                 axios.get("http://127.0.0.1:5002/order/rider/1")
@@ -173,11 +224,12 @@
                     this.Item = order.order_item[0].itemID
                     this.RestaurantName = order.restaurantName
                     
-                    
                 })
                 .catch(error =>{
                     this.restaurants = [{entry: "there was an error: " + error.message}]
                 })
+				this.getRestaurantPostal();
+				this.getTimeDist();
             }
             
         })
@@ -188,12 +240,12 @@
                 Name: null,
                 Phone: null,
                 Address: null,
-                Postal: null,
+                PostalCust: null,
                 timeDist: []
             },
             methods: {
                 getTimeDist: function () {
-                    var get_distance_URL = "http://127.0.0.1:5007/gmaps/" + "Singapore SMU"; //destination is hardcoded for now
+                    var get_distance_URL = "http://127.0.0.1:5007/gmaps/" + "520334"; //destination is hardcoded for now
                     const response =
                         fetch(get_distance_URL)
                             .then(response => response.json())
@@ -221,7 +273,7 @@
                     this.Name = cust.customerName
                     this.Phone = cust.phone
                     this.Address = cust.address
-                    this.Postal = cust.postalCode                    
+                    this.PostalCust = cust.postalCode                    
                 
                 })
                 .catch(error =>{
