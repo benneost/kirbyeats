@@ -19,18 +19,21 @@
         <h1>Restaurants Available</h1>
         <table border=1>
             <tr>
-                <th>Address</th>
-                <th>Phone</th>
-                <th>Postal</th>
                 <th>RestaurantID</th>
                 <th>RestaurantName</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Postal</th>
+                
             </tr>
             <tr v-for="restaurant in restaurants">
-                <td>{{ restaurant.address }}</td>
-                <td>{{ restaurant.phone }}</td>
-                <td>{{ restaurant.postalCode }}</td>
                 <td>{{ restaurant.restaurantID }}</td>
                 <td>{{ restaurant.restaurantName }}</td>
+                <td>{{ restaurant.restaurantContact }}</td>
+                <td>{{ restaurant.restaurantAddress }}</td>
+                <td>{{ restaurant.postalCode }}</td>
+                
+                
             </tr>
         </table>
     </div>
