@@ -36,8 +36,37 @@
                     <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
                   </svg></button></td>
                 
-                
             </tr>
+        </table>
+
+        <table class="table table-striped" v-if="hasOrders">
+            <!-- <table class="table table-striped"> -->
+            <thead>
+                <tr>
+                    <th>OrderID</th>
+                    <th>CustomerID</th>
+                    <th>RestaurantID</th>
+                    <th>RiderID</th>
+                    <th>Status</th>
+                    <th>Order Items</th>
+                    <!-- <th>Traveling Time</th>
+                    <th>Distance</th> -->
+                </tr>
+                <tr v-for="order in orders">
+                    <td>{{ order.orderID }}</td>
+                    <td>{{ order.customerName }}</td>
+                    <td>{{ order.restaurantName }}</td>
+                    <td>{{ order.riderID }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>{{order.order_item}}</td>
+                    <!-- <td>{{ timeDist.time }}</td>
+                    <td>{{ timeDist.distance }}</td> -->
+                    <!-- <td><button @click="placeOrder(book)" type="button" class="btn btn-primary">Place
+                            Order</button>
+                    </td> -->
+                    
+                </tr>
+            </thead>
         </table>
     </div>
 
@@ -48,11 +77,40 @@
     </script>
 
     <script>
+        var get_all_URL = "http://0.0.0.0:5002/order/customer/Benjamin";
+
         new Vue({
             el:"#app",
             data: {
                 restaurants : [],
-                message: null
+                message: null,
+                hasOrders : true,
+                orders : {}
+            },
+            methods: {
+                getAllOrders: function () {
+                        // on Vue instance created, load the order list
+                        const response =
+                            fetch(get_all_URL)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(response);
+                                    if (data.code === 404) {
+                                        // no book in db
+                                        this.message = data.message;
+                                    } else {
+                                        this.orders = data.data;
+                                        console.log(this.orders);
+                                    }
+                                })
+                                // .catch(error => {
+                                //     // Errors when calling the service; such as network error, 
+                                //     // service offline, etc
+                                //     console.log(this.message + error);
+    
+                                // });
+    
+                },
             },
             created: function(){
                 axios.get("http://127.0.0.1:5005/restaurant")
