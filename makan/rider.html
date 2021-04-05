@@ -60,8 +60,14 @@
                             <div class="cell" style="padding: 30px;">
 								Distance
 							</div>
+                            <div class="cell" style="padding: 30px;">
+								Status
+							</div>
+                            <!-- <div class="cell" style="padding: 30px;">
+								Actions
+							</div> -->
 						</div>
-
+                    
 						<div class="row">
 							<div class="cell" data-title="Customer Name">
 								{{CustomerName}}
@@ -81,6 +87,21 @@
                             <div class="cell" data-title="Distance" style="padding: 30px;">
 								{{ appTimeDist.distance }}
 							</div>
+                            <div class="cell" data-title="Status" style="padding: 30px;">
+								{{ status }}
+							</div>
+                            <!-- <div class="cell" data-title="Actions" style="padding: 10px;">
+                                <button id="go" onclick="gotoRestaurant()" style="padding: 30px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+                                    </svg>
+                                </button>
+								<a href="http://localhost:5002/order/collected{{orderID}}">Collected</a>
+                                <br>
+                                <a href="/delete/{{task.id}}">On The Way</a>
+                                <br>
+                                <a href="/delete/{{task.id}}">Delivered</a>
+							</div> -->
 						</div>
 
 					</div>
@@ -152,7 +173,9 @@
 	<script src="css/Table_Responsive_v2/js/main.js"></script>
 
     <script>
-
+        function collected(){
+			window.location = 'customer-foodselection.html';
+		}
 		var get_rest_URL = "http://localhost:5005/restaurant/rider/Kopitiam";
 		console.log(get_rest_URL);
 		
@@ -166,7 +189,9 @@
                 Phone: null,
                 Address: null,
                 Postal: null,
-				appTimeDist : []
+				appTimeDist : [],
+                status : null,
+                orderID : null
             },
 			methods: {
                 getRestaurantPostal: function () {
@@ -193,7 +218,7 @@
     
                 },
 				getTimeDist: function () {
-                    var get_distance_URL = "http://127.0.0.1:5007/gmaps/" + "529509"; //destination is hardcoded for now
+                    var get_distance_URL = "http://127.0.0.1:5007/gmaps/" + "529509";
                     const response =
                         fetch(get_distance_URL)
                             .then(response => response.json())
@@ -223,6 +248,9 @@
                     this.CustomerName = order.customerName
                     this.Item = order.order_item[0].itemID
                     this.RestaurantName = order.restaurantName
+                    this.status = order.status
+                    this.orderID = order.orderID
+                    // console.log(this.orderID)
                     
                 })
                 .catch(error =>{
@@ -273,7 +301,7 @@
                     this.Name = cust.customerName
                     this.Phone = cust.phone
                     this.Address = cust.address
-                    this.PostalCust = cust.postalCode                    
+                    this.PostalCust = cust.postalCode
                 
                 })
                 .catch(error =>{
