@@ -85,31 +85,37 @@
         function postAxios(){
             // const axios = require('axios')
             axios.post("http://127.0.0.1:5100/place_order",{
-                "orderID" : 17,
-                "customerName" : "Ben",
-                "restaurantName" : "subway",
+                "orderID" : 3,
+                "customerName" : "Benjamin",
+                "restaurantName" : "Kopitiam",
                 "riderID" : 2,
                 "status" : "HELLO",
                 "created" : "",
                 "modified" : "",
                 "order_item": [
                                 {
-                                    "foodName": "chicken",
-                                    "itemID": 5,
-                                    "orderID": 3,
-                                    "quantity": 3
+                                    "foodName": "Chicken Rice",
+                                    "itemID": 1,
+                                    "orderID": 1,
+                                    "quantity": 1
                                 },
                                 {
-                                    "foodName": "salmon",
-                                    "itemID": 6,
-                                    "orderID": 3,
-                                    "quantity": 3
+                                    "foodName": "Meepok",
+                                    "itemID": 2,
+                                    "orderID": 1,
+                                    "quantity": 1
                                 }
                             ]
             })
             .then(function (response){
                 console.log(response);
+                console.log(response.data);
+                if (response.data.code == 201){
+                    alert("Success")
+                    window.location = 'customer-restaurant.html'
+                }
             })
+            
         }
     </script>
 
