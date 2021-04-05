@@ -77,9 +77,40 @@
 			</div>
 		</div>
 	</div>
+    <button onclick="postAxios()">Place Order</button>
+    
 
-
-	
+	<script>
+        function postAxios(){
+            // const axios = require('axios')
+            axios.post("http://127.0.0.1:5100/place_order",{
+                "orderID" : 17,
+                "customerName" : "Ben",
+                "restaurantName" : "subway",
+                "riderID" : 2,
+                "status" : "HELLO",
+                "created" : "",
+                "modified" : "",
+                "order_item": [
+                                {
+                                    "foodName": "chicken",
+                                    "itemID": 5,
+                                    "orderID": 3,
+                                    "quantity": 3
+                                },
+                                {
+                                    "foodName": "salmon",
+                                    "itemID": 6,
+                                    "orderID": 3,
+                                    "quantity": 3
+                                }
+                            ]
+            })
+            .then(function (response){
+                console.log(response);
+            })
+        }
+    </script>
 
 <!--===============================================================================================-->	
 	<script src="css/Table_Responsive_v2/vendor/jquery/jquery-3.2.1.min.js"></script>
@@ -96,15 +127,6 @@
             el: "#app",
             data: {
                 foods: []
-            },
-            methods:{
-                placeOrder:function(){
-                    fetch("http://127.0.0.1:5100/place_order",{
-                        method: "POST",
-                        headers: {"Content-type" : "application/json"},
-                        body: JSON.stringify({})
-                    })
-                }
             },
             created: function(){
                 axios.get("http://127.0.0.1:5005/restaurant/food/1")
