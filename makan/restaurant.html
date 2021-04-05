@@ -46,13 +46,13 @@
                 message : null
             },
             created: function(){
-                axios.get("http://127.0.0.1:5002/order/restaurant/1")
+                axios.get("http://127.0.0.1:5002/order/restaurant/Kopitiam")
                 .then(response=>{
                     objs = response.data.data
                     console.log(objs)
-                    this.CustomerID = objs.customerID
+                    this.CustomerID = objs.customerName
                     this.OrderID = objs.orderID
-                    this.ItemID = objs.order_item[0]["foodID"]
+                    this.ItemID = objs.order_item[0]["foodName"]
                     this.RiderID = objs.riderID
                 })
                 .catch(error =>{
