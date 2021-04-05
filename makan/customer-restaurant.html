@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Document</title>
+	<title>CustomerUI</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
@@ -92,20 +92,17 @@
 
 		<div class="container-table100" v-if="hasOrders">
 			<div class="wrap-table100">
-					<div class="table" id='app'>
+					<div class="table" id='customer'>
 
 						<div class="row header">
 							<div class="cell">
 								Order ID
 							</div>
 							<div class="cell">
-								Customer ID
+								Customer Name
 							</div>
 							<div class="cell">
-								Restaurant ID
-							</div>
-							<div class="cell">
-								Rider ID
+								Restaurant Name
 							</div>
 							<div class="cell">
 								Status
@@ -114,19 +111,16 @@
 								Order Items
 							</div>
 						</div>
-
-						<div class="row" v-for="order in orders">
+                        
+                        <div class="row" v-for="order in orders">
 							<div class="cell" data-title="Order ID">
 								{{ order.orderID }}
 							</div>
-							<div class="cell" data-title="Customer ID">
+							<div class="cell" data-title="Customer Name">
 								{{ order.customerName }}
 							</div>
-							<div class="cell" data-title="Restaurant ID">
+							<div class="cell" data-title="Restaurant Name">
 								{{ order.restaurantName }}
-							</div>
-							<div class="cell" data-title="Rider ID">
-								{{ order.riderID }}
 							</div>
 							<div class="cell" data-title="Status">
 								{{ order.status }}
@@ -160,7 +154,7 @@
     </script>
 
     <script>
-        var get_all_URL = "http://0.0.0.0:5002/order/customer/Benjamin";
+        
 
         new Vue({
             el:"#app",
@@ -168,33 +162,33 @@
                 restaurants : [],
                 message: null,
                 hasOrders : true,
-                orders : {}
+                // orders : {}
             },
-            methods: {
-                getAllOrders: function () {
-                        // on Vue instance created, load the order list
-                        const response =
-                            fetch(get_all_URL)
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(response);
-                                    if (data.code === 404) {
-                                        // no book in db
-                                        this.message = data.message;
-                                    } else {
-                                        this.orders = data.data;
-                                        console.log(this.orders);
-                                    }
-                                })
-                                // .catch(error => {
-                                //     // Errors when calling the service; such as network error, 
-                                //     // service offline, etc
-                                //     console.log(this.message + error);
+            // methods: {
+            //     getAllOrders: function () {
+            //             // on Vue instance created, load the order list
+            //             const response =
+            //                 fetch(get_all_URL)
+            //                     .then(response => response.json())
+            //                     .then(data => {
+            //                         console.log(response);
+            //                         if (data.code === 404) {
+            //                             // no book in db
+            //                             this.message = data.message;
+            //                         } else {
+            //                             this.orders = data.data;
+            //                             console.log(this.orders);
+            //                         }
+            //                     })
+            //                     .catch(error => {
+            //                         // Errors when calling the service; such as network error, 
+            //                         // service offline, etc
+            //                         console.log(this.message + error);
     
-                                // });
+            //                     });
     
-                },
-            },
+            //     },
+            // },
             created: function(){
                 axios.get("http://127.0.0.1:5005/restaurant")
                 .then(response=>{
@@ -208,6 +202,67 @@
                     this.message = [{entry: "there was an error: " + error.message}]
                 })
             }
+        })
+
+        var get_all_URL = "http://0.0.0.0:5002/order/customer/Benjamin";
+
+        new Vue({
+            el: "#customer",
+            data: {
+                CustomerName : null,
+                Item : null,
+                RestaurantName : null,
+                Name: null,
+                Phone: null,
+                Address: null,
+                Postal: null,
+                orders : []
+
+            },
+            // methods: {
+            //     getAllOrders: function () {
+            //             // on Vue instance created, load the order list
+            //             const response =
+            //                 fetch(get_all_URL)
+            //                     .then(response => response.json())
+            //                     .then(data => {
+            //                         if (data.code === 404) {
+            //                             // no book in db
+            //                             this.message = data.message;
+            //                         } else {
+            //                             this.orders = data.data;
+            //                             console.log(this.orders);
+            //                         }
+            //                     })
+            //                     .catch(error => {
+            //                         // Errors when calling the service; such as network error, 
+            //                         // service offline, etc
+            //                         console.log(this.message + error);
+    
+            //                     });
+    
+            //     },
+            // },
+            created: function(){
+                axios.get("http://127.0.0.1:5002/order/customer/Benjamin")
+                .then(response=>{
+                    ord = response.data.data
+                    console.log(ord)
+                    this.orders = [ord]
+                    console.log(this.orders)
+                    // this.OrderID = order.orderID
+                    // console.log(this.order["orderID"])
+                    // this.Item = order.order_item[0].itemID
+                    // this.RestaurantName = order.restaurantName
+                    
+                    
+                })
+                .catch(error =>{
+                    this.restaurants = [{entry: "there was an error: " + error.message}]
+                })
+                // this.getAllOrders
+            }
+            
         })
     </script>
 </body>
