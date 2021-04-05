@@ -20,12 +20,19 @@
                 <th>Food Name</th>
                 <th>Price</th>
                 <th>Description</th>
+                <th>Select?</th>
             </tr>
 
             <tr v-for="food in foods">
                 <td>{{ food.foodName }}</td>
                 <td>{{ food.price }}</td>
                 <td>{{ food.description }}</td>
+                <td><div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                    
+                    </label>
+                </td>
             </tr>
         </table>
     </div>
@@ -38,6 +45,15 @@
             el: "#app",
             data: {
                 foods: []
+            },
+            methods:{
+                placeOrder:function(){
+                    fetch("http://127.0.0.1:5100/place_order",{
+                        method: "POST",
+                        headers: {"Content-type" : "application/json"}
+                        body: JSON.stringify({})
+                    })
+                }
             },
             created: function(){
                 axios.get("http://127.0.0.1:5005/restaurant/food/1")
