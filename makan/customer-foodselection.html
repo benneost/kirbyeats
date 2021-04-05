@@ -74,8 +74,8 @@
 							</div>
 						</div>
 					</div>   
+                    <center><button onclick="postAxios()" type="button" class="btn btn-primary">Place Order</button></center>
 			</div>
-            <button onclick="postAxios()" type="button" class="btn btn-primary">Place Order</button>
 		</div>
 	</div>
     
@@ -84,12 +84,12 @@
 	<script>
         function postAxios(){
             // const axios = require('axios')
-            axios.post("http://127.0.0.1:5100/place_order",{
-                "orderID" : 3,
+            axios.post("http://localhost:5100/place_order",{
+                "orderID" : 4,
                 "customerName" : "Benjamin",
                 "restaurantName" : "Kopitiam",
                 "riderID" : 2,
-                "status" : "HELLO",
+                "status" : "NEW",
                 "created" : "",
                 "modified" : "",
                 "order_item": [
@@ -136,7 +136,7 @@
                 foods: []
             },
             created: function(){
-                axios.get("http://127.0.0.1:5005/restaurant/food/1")
+                axios.get("http://localhost:5005/restaurant/food/1")
                 .then(response=>{
                     cart = response.data.data
                     this.foods = cart

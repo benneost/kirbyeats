@@ -59,7 +59,7 @@ def processPlaceOrder(order):
     # 2. Send the order info {cart items}
     # Invoke the order microservice
     print("\n-----Invoking order microservice-----")
-    order_result = invoke_http(order_URL, method="POST", json=order)
+    order_result = invoke_http("http://localhost:5002/order", method="POST", json=order)
     print("order_result:", order_result)
 
     # Check the order result; if a failure, send it to the error microservice

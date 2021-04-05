@@ -49,30 +49,33 @@
 								Order ID
 							</div>
 							<div class="cell">
-								Food Name
-							</div>
-							<div class="cell">
 								Rider ID
 							</div>
-						</div>
-
-						<div class="row">
-							<div class="cell" data-title="Customer ID">
-								{{CustomerID}}
-							</div>
-							<div class="cell" data-title="Order ID">
-								{{OrderID}}
-							</div>
-							<div class="cell" data-title="Item ID">
-								{{ItemID}}
-							</div>
-							<div class="cell" data-title="Rider ID">
-								{{Status}}
+							<div class="cell">
+								Food Name
 							</div>
 						</div>
 
 						<div class="row">
 							<div class="cell" data-title="Customer ID">
+								{{details.customerName}}
+							</div>
+							<div class="cell" data-title="Order ID">
+								{{details.orderID}}
+							</div>
+							<div class="cell" data-title="Item ID">
+								{{details.riderID}}
+							</div>
+							<div class="cell" data-title="Rider ID">
+								<ol v-for="item in items">
+									<li>{{item.foodName}}</li>
+								</ol>
+								
+							</div>
+						</div>
+
+						<!-- <div class="row">
+							<div class="cell" data-title="Customer ID">
 								2
 							</div>
 							<div class="cell" data-title="Order ID">
@@ -99,7 +102,7 @@
 							<div class="cell" data-title="Rider ID">
 								3
 							</div>
-						</div>
+						</div> -->
 
 					</div>
 			</div>
@@ -123,21 +126,19 @@
         new Vue({
             el: "#app",
             data: {
-                CustomerID : null,
-                OrderID: null,
-                ItemID: null,
-                Status: null,
-                message : null
+                details: null,
+                message : null,
+				items : []
             },
             created: function(){
-                axios.get("http://127.0.0.1:5002/order/restaurant/Kopitiam")
+                axios.get("http://localhost:5002/order/restaurant/Kopitiam")
                 .then(response=>{
                     objs = response.data.data
-                    console.log(objs)
-                    this.CustomerID = objs.customerName
-                    this.OrderID = objs.orderID
-                    this.ItemID = objs.order_item[0]["foodName"]
-                    this.Status = objs.status
+					this.details = objs
+                    console.log(this.details)
+                    this.items = objs.order_item
+					console.log(this.items)
+                    
                 })
                 .catch(error =>{
                     this.message = [{entry: "there was an error: " + error.message}]

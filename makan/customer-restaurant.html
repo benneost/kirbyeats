@@ -153,11 +153,7 @@
 <!--===============================================================================================-->
 	<script src="css/Table_Responsive_v2/js/main.js"></script>
 
-    <script>
-        function gotoRestaurant(){
-            
-        }
-    </script>
+    
 
     <script>
         
@@ -170,7 +166,7 @@
                 hasOrders : true,
             },
             created: function(){
-                axios.get("http://127.0.0.1:5005/restaurant")
+                axios.get("http://localhost:5005/restaurant")
                 .then(response=>{
                     rests = response.data.data.restaurants
                     this.restaurants = rests
@@ -199,7 +195,7 @@
 
             },
             created: function(){
-                axios.get("http://127.0.0.1:5002/order/customer/Benjamin")
+                axios.get("http://localhost:5002/order/customer/Benjamin")
                 .then(response=>{
                     ord = response.data.data
                     console.log(ord)

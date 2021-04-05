@@ -1,0 +1,148 @@
+version: "3.8"
+
+volumes:
+  rabbitmq_data:
+
+services:
+ 
+  ###################################
+  # Order: The Order microservice
+  ###################################
+  order:
+    build:
+      context: ./
+      dockerfile: order.Dockerfile
+    image: kennethlekk/order:esd
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd-order
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5002:5002"
+ 
+
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: esd-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
+      
+  #################################################
+  # Activity Log: The Activity Log microservice
+  #################################################
+  activity_log:
+    build:
+      context: ./
+      dockerfile: activity_log.Dockerfile
+    image: kennethlekk/activity_log:esd
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
+
+  ###################################
+  # Error: The Error microservice
+  ###################################
+  error:
+    build:
+      context: ./
+      dockerfile: error.Dockerfile
+    image: kennethlekk/error:esd
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
+
+  ###############################################
+  # Place Order: The Place Order microservice
+  ###############################################
+  place_order:
+    build:
+      context: ./
+      dockerfile: place_order.Dockerfile
+    image: kennethlekk/place_order:esd
+    restart: always
+    depends_on:
+      - order
+      - activity_log
+      - error
+      - rabbitmq 
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      order_URL: http://order:5002/order
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5100:5100"
+
+  ##################################
+  # Restaurant: The Restaurant microservice
+  ##################################
+  restaurant:
+    build:
+      context: ./
+      dockerfile: restaurant.Dockerfile
+    image: kennethlekk/restaurant:esd
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd-restaurant
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5005:5005"
+
+  ##################################
+  # Customer: The Customer microservice
+  ##################################
+  customer:
+    build:
+      context: ./
+      dockerfile: customer.Dockerfile
+    image: kennethlekk/customer:esd
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd-customer
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5006:5006"
+  
+  ##################################
+  # Rider: The Rider microservice
+  ##################################
+  rider:
+    build:
+      context: ./
+      dockerfile: rider.Dockerfile
+    image: kennethlekk/rider:esd
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd-rider
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5001:5001"
+
+  ##################################
+  # Gmaps: External API
+  ##################################
+  gmaps:
+    build:
+      context: ./
+      dockerfile: gmaps.Dockerfile
+    image: kennethlekk/gmaps:esd
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5007:5007"

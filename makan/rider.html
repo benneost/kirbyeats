@@ -39,6 +39,7 @@
 	<div class="limiter">
 		<div class="container-table100">
 			<div class="wrap-table100">
+                
 					<div class="table" id='app'>
 
 						<div class="row header">
@@ -193,7 +194,7 @@
     
                 },
 				getTimeDist: function () {
-                    var get_distance_URL = "http://127.0.0.1:5007/gmaps/" + "529509"; //destination is hardcoded for now
+                    var get_distance_URL = "http://localhost:5007/gmaps/" + "529509"; //destination is hardcoded for now
                     const response =
                         fetch(get_distance_URL)
                             .then(response => response.json())
@@ -216,7 +217,7 @@
                 }
             },
             created: function(){
-                axios.get("http://127.0.0.1:5002/order/rider/1")
+                axios.get("http://localhost:5002/order/rider/1")
                 .then(response=>{
                     order = response.data.data
                     console.log(order)
@@ -245,7 +246,7 @@
             },
             methods: {
                 getTimeDist: function () {
-                    var get_distance_URL = "http://127.0.0.1:5007/gmaps/" + "520334"; //destination is hardcoded for now
+                    var get_distance_URL = "http://localhost:5007/gmaps/" + "520334"; //destination is hardcoded for now
                     const response =
                         fetch(get_distance_URL)
                             .then(response => response.json())
@@ -267,7 +268,7 @@
                 }
             },
             created: function(){
-                axios.get("http://127.0.0.1:5006/customer/1")
+                axios.get("http://localhost:5006/customer/1")
                 .then(response=>{
                     cust = response.data.data
                     this.Name = cust.customerName

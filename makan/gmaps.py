@@ -44,7 +44,7 @@ def calculate_time(destination):
     api_key = "AIzaSyDeWOuGGRp5f4LIa2HC2jL0qcKLJeB82WE"
 
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
-    r = requests.get(url + "origins=" + home + "&destinations=" + destination + "&key=" + api_key) 
+    r = requests.get(url + "origins=" + origin + "&destinations=" + destination + "&key=" + api_key) 
 
     time = r.json()["rows"][0]["elements"][0]["duration"]["text"]       
     distance = r.json()["rows"][0]["elements"][0]["distance"]["text"]       
@@ -61,4 +61,4 @@ def calculate_time(destination):
     )
 
 if __name__ == "__main__":
-    app.run(port=5007, debug=True)
+    app.run(host="0.0.0.0", port=5007, debug=True)

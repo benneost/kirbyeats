@@ -276,4 +276,4 @@ def find_by_customerName(customerName):
 
 if __name__ == '__main__':
     print("This is flask for KirbyEats" + os.path.basename(__file__) + ": manage orders ...")
-    app.run(port=5002, debug=True)
+    app.run(host="0.0.0.0", port=5002, debug=True)
