@@ -1,66 +1,97 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head>
+	<title>Restaurant Log In</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="Login_template/image/png" href="css/Login_template/images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Login_template/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Login_template/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Login_template/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Login_template/vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="css/Login_template/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Login_template/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Login_template/vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="css/Login_template/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/Login_template/css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/Login_template/css/main.css">
+<!--===============================================================================================-->
+</head>
 
-        <!-- Vendor CSS Files -->
-        <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
-        <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-        <link href="assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
-        <link href="assets/vendor/venobox/venobox.css" rel="stylesheet">
-        <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+<body style="background-image: url('css/Login_template/images/bg03.jpg')">
+	
+	<div class="limiter">
 
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        <!-- <div>
-            <h3>Log In</h3>
-            <input type="text" id="login" placeholder="Enter username">
-            <input type="password" id="password" placeholder="Password" required>
-        </div> -->
-        
-        <div id="logintab" class="container" style="text-align: center;"><br>
-            <form id="loginForm">
-              <div class="form-group">
-                <h2 style="text-align: center;">Restaurant Log In</h2>
-                <input type="email" class="form-control" id="login" aria-describedby="emailHelp" placeholder="Enter email">
-              </div>
-              <div class="form-group">
-                <input type="password" class="form-control" id="password" placeholder="Password" required>
-              </div>
-              <div id="errorMsg"></div>
-              <div class="form-row">
-                <div class="col">
-                  <button type="button" id="loginBtn" class="btn btn-primary" onclick="loginSuccessful()">Submit</button>
-                </div>
-              </form>
-                <div class="col">
-                  <a class="nav-link btn btn-light" style="margin-right: 10px;" data-toggle="pill" href="#signuptab">Sign Up</a>
-                </div>
-                <br>
-              </div>
-              <br>
+		<div class="container-login100">
+			
+			<div class="wrap-login100">
+				<div style="text-align: center;">
+					<img src="img/restaurant.jpg" width="300" height="300" style="padding: 20px;"/>
+				</div>
+
+				<form class="login100-form validate-form">
+					<div class="wrap-input100 validate-input m-b-26" data-validate="Username is required">
+						<span class="label-input100">Username</span>
+						<input class="input100" type="text" id="login" name="username" placeholder="Enter username">
+						<span class="focus-input100"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input m-b-18" data-validate = "Password is required">
+						<span class="label-input100">Password</span>
+						<input class="input100" type="password" name="password" placeholder="Enter password">
+						<span class="focus-input100"></span>
+					</div>
+
+					<div class="flex-sb-m w-full p-b-30">
+					</div>
+
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn" type="button" onclick="loginSuccessful()" style="background-color: rgb(253, 133, 133);">
+							Login
+						</button>
           </div>
-        
-        <script>
-            function loginSuccessful() {
+                    
+          <div class="flex-sb-m w-full p-b-30" style="color:red">
+          </div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+<!--===============================================================================================-->
+	<script src="css/Login_template/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="css/Login_template/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="css/Login_template/vendor/bootstrap/js/popper.js"></script>
+	<script src="css/Login_template/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="css/Login_template/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="css/Login_template/vendor/daterangepicker/moment.min.js"></script>
+	<script src="css/Login_template/vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="css/Login_template/vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+	<script src="css/Login_template/js/main.js"></script>
+
+  <script>
+    function loginSuccessful() {
                 var getInput = document.getElementById("login").value;
                 localStorage.setItem("storageName",getInput);
                 window.location = 'restaurant.html';
-            }
-            
-        </script>
-    </body>
+    }
+  </script>
+
+</body>
 </html>
