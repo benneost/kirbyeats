@@ -146,3 +146,19 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5007:5007"
+
+  ###################################
+  # Payment: The payment microservice
+  ###################################
+ 
+  payment:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: kennethlekk/payment-esd
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/payment
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5000:5000"
