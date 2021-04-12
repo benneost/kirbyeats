@@ -154,7 +154,7 @@ services:
   payment:
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: paypal.Dockerfile
     image: kennethlekk/payment-esd
     restart: always
     environment:
